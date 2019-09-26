@@ -67,7 +67,7 @@ if __name__ == '__main__':
 		table = tt.Texttable()
 		table.header(["Instructions"])
 		table.add_row(["The present code allows to manage MIRAX files of histological samples. Two possible solutions were implemented:\n\n 1) Select a specific region of interest(ROI) from the whole slide image (WSI) and then cut it in sub-images\n 2) Find the spots in a TMA sample and cut them in sigle images"])
-		table.add_row(["Prerequisites:\n1) Matlab\n  - MATLAB Engine API for Python\n2) Python2.6 or 3\n  - openslide,sys, os, time, csv, pandas, numpy"])
+		table.add_row(["Prerequisites:\n1) Matlab\n  - MATLAB Engine API for Python\n2) Python2.6 or 3\n  - openslide,sys, os, time, csv, pandas, numpy, texttable"])
 		table.add_row(["How to run:\n - Open the terminal in the code folder and write:\n\n\tPython CropCode.py\n\nThen follow simply answer to the question!"])
 		table.add_row(["ROI: The ROI option allows to select a specif area and then cut it in sub-images. This can be useful in case it is necessary to select only a portion of the WSI. The following cut is implemented in order to work with the image that problably is in the order of ~GB.\n"\
 		"\nThe program will ask you:\n - Input directory\n - Output directory\n - Dimesion of the square used for cut the ROI\n\nA GUI is used to select the ROI.\n\nSuggestion: check the size in pixel of the WSI and then choose the dimension of the square according to it."\
