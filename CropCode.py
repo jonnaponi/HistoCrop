@@ -41,7 +41,7 @@ def in_out():
 if __name__ == '__main__':
 
 	#Program title
-	Title = render('Crop Program', colors=['bright_white', 'white'])
+	Title = render('HistoCrop', colors=['bright_white', 'white'])
 	print(Title)
 
 	#Selection of the two possible funciton: ROI crop, Spot crop + Help instructions
