@@ -26,7 +26,7 @@ angle = horizon(Ibw, 0.1, 'hough');
 se = strel('disk',1,0);
 Ibw = imdilate(Ibw,se);
 Ibw = bwareaopen(Ibw,200);
-se = strel('disk',2,0);
+se = strel('disk',3,0);
 Ibw = imdilate(Ibw,se);
 
 %Filter elements of the mask based on area

@@ -10,7 +10,7 @@
 % Ariotta Valeria  & Pohjonen Joona
 % June 2019
 
-function [mat_coord] = spot_matrix(thumbnail)
+function [mat_coord] = spot_matrix(thumbnail, radius)
 
 %Grayscale conversion
 Igray=rgb2gray(thumbnail);
@@ -21,8 +21,9 @@ Ibw=~imbinarize(Igray);
 
 %Remove small specs
 Ibw = bwareaopen(Ibw,200);
+
 %Detect the matrix
-se = strel('disk',90,0);
+se = strel('disk',radius,0);
 Ibw_mat = imdilate(Ibw,se);
 Ibw_mat = bwareafilt(Ibw_mat,1);
 %Caclulate bounding box

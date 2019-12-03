@@ -94,7 +94,10 @@ function LoadDir_Callback(hObject, eventdata, handles)
 %Import GUI_IM data
 GUI_IM = getappdata(0, 'GUI_IM');
 %Load the variable from workspace regarding the thumbnails spots
+set(gcf,'pointer','watch')
+drawnow()
 File=load('tmp_summaries');
+set(gcf, 'pointer','arrow')
 File = File.all_thumbnails;
 
 %Control for the "Next" and "Prev" button
@@ -180,7 +183,7 @@ save('List_Rect','add_rect_data','add_Img_num');
 %Dialog box of success operation
 tex_struct.Interpreter = 'tex';
 tex_struct.WindowStyle = 'modal';
-uiwait(msgbox('\fontsize{15}Operation Complete! Summary images are in the spots folder.',tex_struct));
+uiwait(msgbox('\fontsize{15}Operation Complete! The summary images are in the spots folder.',tex_struct));
 
 %Clean and close everything
 clear all
