@@ -1,13 +1,14 @@
 % Get spot_coordinates for cropper.py
 %
 %INPUT:
-%       -mrxs_input: Folder of the converted mrxs files 
+%       -mrxs_input: Folder of the converted mrxs files
 %       -mrxs_thumbnails: Outuput folder
 %       -n_rows: Maximum number of rows in TMA
 %       -n_cols: Maximum number of cols in TMA
 %
 % Ariotta Valeria  & Pohjonen Joona
 % June 2019
+
 
 function [r]=get_spots(mrxs_input,mrxs_thumbnails, n_rows, n_cols, radius, xlsx_path)
 %Find thumbnails
@@ -159,7 +160,7 @@ if ~isempty(not_cut)
         
         %Save the path of the original mrxs file
         mrxs_paths{tma_i} = [mrxs_input '/' mrxs_name '.mrxs'];
-                
+        
         %Create and save summary image
         summaryImg = all_thumbnails{tma_i};
         summaryImg = insertShape(summaryImg,'Rectangle',all_spots{tma_i}(:,2:5),...
@@ -203,27 +204,27 @@ if ~isempty(not_cut)
         if ~isempty(dir([xlsx_path filesep mrxs_name '.*']))
             stop_loop = 0;
             if stop_excel == 1
-                output = ['There were some errors in the detection of spots. See the generated summary image for ', mrxs_name,'\n']
+                output = ['There were some errors in the detection of spots. See the generated summary image for ', mrxs_name,'\n'];
                 fprintf(output)
-                stop_loop = 0
+                stop_loop = 1;
             end
             
             try
-                numbers = readcell([xlsx_path filesep mrxs_name],'Sheet',2);
-                numbers = cellfun(@(x) string(x), numbers(2:end,2:end));
-                numbers = str2double(numbers)';
-                numbers = rmmissing(numbers,1,'MinNumMissing',n_rows);
-                numbers = rmmissing(numbers,2,'MinNumMissing',n_cols);
+               numbers = readcell([xlsx_path filesep mrxs_name],'Sheet',2);
+               numbers = cellfun(@(x) string(x), numbers(2:end,2:end));
+               numbers = rmmissing(numbers,1,'MinNumMissing',n_cols);
+               numbers = rmmissing(numbers,2,'MinNumMissing',n_rows);
+               numbers = str2double(numbers)';
             catch
-                fprintf('Excel file does not exist or sheet 2 with number information not present!\n')
-                stop_loop = 1;
+               fprintf('Excel file does not exist or sheet 2 with number information not present!\n')
+               stop_loop = 1;
             end
             
             try
                 names = readcell([xlsx_path filesep mrxs_name],'Sheet',3);
                 names = cellfun(@(x) string(x), names(2:end,2:end));
-                names = rmmissing(names,1,'MinNumMissing',n_rows);
-                names = rmmissing(names,2,'MinNumMissing',n_cols);
+                names = rmmissing(names,1,'MinNumMissing',n_cols);
+                names = rmmissing(names,2,'MinNumMissing',n_rows);
                 names = names';
                 
                 %Change names to correct form
@@ -231,10 +232,10 @@ if ~isempty(not_cut)
                 
                 for i=1:length(names(1:end))
                     if  missing_names(i)
-                        names(i) = "missing";  
+                        names(i) = "missing";
                     else
                         ind = strfind(names(i),'_');
-                    names(i) = names{i}(1:ind-1);
+                        names(i) = names{i}(1:ind-1);
                     end
                 end
                 
@@ -243,13 +244,18 @@ if ~isempty(not_cut)
                 stop_loop = 1;
             end
             
-           % if length(names(1:end)) ~= n_rows * n_cols
-           %     fprintf('Excel file and given maximum row and column lengths do not match!')
-           %     stop_loop = 1;
-           % end
-
+            %if length(names(1:end)) ~= n_rows * n_cols
+            %    fprintf('Excel file and given maximum row and column lengths do not match!')
+            %    stop_loop = 1;
+            %end
+            
+            if ~all(size(names) == size(numbers))
+                fprintf('There are something wrong with the excel. Sizes of the name and number matrices do not match!\n') 
+                stop_loop = 1;
+            end
+            
             if stop_loop == 0
-                names = flipud([numbers(:) names(:)]);
+                names = [numbers(:) names(:)];
                 names = names(all_spots{tma_i}(:,1)',:);
                 names(ismissing(names(:,1)),1) = "NA";
                 
@@ -259,21 +265,21 @@ if ~isempty(not_cut)
                     'Color','red','LineWidth', 3);
                 for i=1:length(names)
                     summaryImg = insertText(summaryImg,[all_spots{tma_i}(i,2)+1,all_spots{tma_i}(i,3)+1],...
-                        names(i,2),'BoxOpacity',0,'FontSize',16);
+                        names(i,2),'BoxOpacity',0,'FontSize',12);
                 end
                 imwrite(summaryImg,[output_name '_spot_name.png'],'Quality','100','Mode','lossless');
                 
                 %Create and save id summary image
-                summaryImg = all_thumbnails{tma_i};
-                summaryImg = insertShape(summaryImg,'Rectangle',all_spots{tma_i}(:,2:5),...
-                    'Color','red','LineWidth', 3);
-                for i=1:length(names)
-                    summaryImg = insertText(summaryImg,[all_spots{tma_i}(i,2)+1,all_spots{tma_i}(i,3)+1],...
-                        string(names(i,1)),'BoxOpacity',0,'FontSize',32);
-                end
-                imwrite(summaryImg,[output_name '_spot_number.png'],'Quality','100','Mode','lossless');
-                
-                all_spot_names_id{tma_i} = names(:,1);
+                %summaryImg = all_thumbnails{tma_i};
+%                 summaryImg = insertShape(summaryImg,'Rectangle',all_spots{tma_i}(:,2:5),...
+%                     'Color','red','LineWidth', 3);
+%                 for i=1:length(names)
+%                     summaryImg = insertText(summaryImg,[all_spots{tma_i}(i,2)+1,all_spots{tma_i}(i,3)+1],...
+%                         string(names(i,1)),'BoxOpacity',0,'FontSize',32);
+%                 end
+%                 imwrite(summaryImg,[output_name '_spot_number.png'],'Quality','100','Mode','lossless');
+%                  
+%                 all_spot_names_id{tma_i} = names(:,1);
                 all_spot_names_name{tma_i} = names(:,2);
             end
         end
@@ -288,21 +294,20 @@ if ~isempty(not_cut)
     spot_names_id = zeros(1,2);
     spot_names_name = zeros(1,2);
     
-    for i=1:length(all_spots)     
+    for i=1:length(all_spots)
         all_spots{i}(:,2:3) = all_spots{i}(:,2:3) + repelem(all_mat_coord{i}([1 3]), length(all_spots{i}),1);
         spot_mat = [spot_mat;repmat(i,length(all_spots{i}),1) all_spots{i}];
         spot_names = [spot_names;repmat(i,length(all_spot_names{i}),1) all_spot_names{i}];
-        spot_names_id = [spot_names_id;repmat(i,length(all_spot_names_id{i}),1) all_spot_names_id{i}];
+        %spot_names_id = [spot_names_id;repmat(i,length(all_spot_names_id{i}),1) all_spot_names_id{i}];
         spot_names_name = [spot_names_name;repmat(i,length(all_spot_names_name{i}),1) all_spot_names_name{i}];
     end
     writematrix(spot_mat(2:end,:),'all_spots.csv')
     writecell(mrxs_paths,'mrxs_paths.csv')
     writematrix(spot_names(2:end,:),'spot_names.csv')
     if exist(xlsx_path)
-        writematrix(spot_names_id(2:end,:),'spot_names_id.csv')
+        %writematrix(spot_names_id(2:end,:),'spot_names_id.csv')
         writematrix(spot_names_name(2:end,:),'spot_names_name.csv')
     end
-    
 else
     fprintf('\nAll spots have been cut.\n')
 end

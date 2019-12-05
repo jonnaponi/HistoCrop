@@ -183,7 +183,7 @@ save('List_Rect','add_rect_data','add_Img_num');
 %Dialog box of success operation
 tex_struct.Interpreter = 'tex';
 tex_struct.WindowStyle = 'modal';
-uiwait(msgbox('\fontsize{15}Operation Complete! The summary images are in the spots folder.',tex_struct));
+uiwait(msgbox('\fontsize{15}Operation Complete! The summary images are in the output folder.',tex_struct));
 
 %Clean and close everything
 clear all

@@ -76,9 +76,9 @@ class Crop():
 			except ValueError:
 				col=input('ERROR! Not a number! Please enter the number of spot per column, choose the maximum number possible: ' )
 
-		excel = input('Do you have an excel file with spot information? [Y/N] ')
+		excel = input('Do you have an excel file with spot information? [Y/N] ').upper()
 		while not excel in ['Y','N']:
-			correct = str(input('Do you have an excel file with spot information? [Y/N] '))
+			excel = input('Do you have an excel file with spot information? [Y/N] ').upper()
 		if excel == 'Y':
 			print('Please select the excel directory')
 			root = Tk()
@@ -123,10 +123,10 @@ class Crop():
 			ax2.set_title('Detected matrix')
 
 			plt.show(block=False)
-			correct = str(input('Was the matrix detected correctly? [Y/N] '))
+			correct = str(input('Was the matrix detected correctly? [Y/N] ').upper())
 			plt.close('all')
 			while not correct in ['Y','N']:
-				correct = str(input('Was the matrix detected correctly? [Y/N] '))
+				correct = str(input('Was the matrix detected correctly? [Y/N] ').upper())
 			if correct == 'N':
 				print('Previous radius: ' + str(radius))
 				radius = input('Give a new radius (integer): ')

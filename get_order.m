@@ -46,14 +46,19 @@ for tma_i=1:length(all_spots)
     eva = evalclusters(all_spots{tma_i}(:,1),'kmeans','silhouette','KList',1:n_cols);
     number_of_cols = eva.OptimalK;
     
-    number_of_rows = 1:min(n_rows,ceil(length(all_spots{tma_i})/(n_cols-1)));
-    eva = evalclusters(all_spots{tma_i}(:,2),'kmeans','silhouette','KList',number_of_rows);
-    number_of_rows = eva.OptimalK;
+    
+    if length(all_spots{tma_i})/(n_rows*n_cols) >0.7
+        number_of_rows = n_rows;
+    else
+        number_of_rows = 1:min(n_rows,ceil(length(all_spots{tma_i})/(n_cols-1)));
+        eva = evalclusters(all_spots{tma_i}(:,2),'kmeans','silhouette','KList',number_of_rows);
+        number_of_rows = eva.OptimalK;
+    end
     
     %Hierarchial clustering works better for us
     all_spots{tma_i} = [all_spots{tma_i},clusterdata(all_spots{tma_i}(:,1),number_of_cols) + 1e6];
     all_spots{tma_i} = [all_spots{tma_i},clusterdata(all_spots{tma_i}(:,2),number_of_rows) + 2e6];
-        
+    
     %Change cluster numbers
     all_spots{tma_i} = sortrows(all_spots{tma_i},1, 'descend');
     clusts = unique(all_spots{tma_i}(:,5),'stable');

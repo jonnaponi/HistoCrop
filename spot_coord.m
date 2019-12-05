@@ -69,9 +69,14 @@ spots(:,2) = spots(:,2) - spots(:,4)/2;
 eva = evalclusters(spots(:,1),'kmeans','silhouette','KList',1:n_cols);
 number_of_cols = eva.OptimalK;
 
-number_of_rows = 1:min(n_rows,ceil(length(spots)/(n_cols-1)));
-eva = evalclusters(spots(:,2),'kmeans','silhouette','KList',number_of_rows);
-number_of_rows = eva.OptimalK;
+if length(spots)/(n_rows*n_cols) >0.7
+    number_of_rows = n_rows;
+else
+    number_of_rows = 1:min(n_rows,ceil(length(spots)/(n_cols-1)));
+    eva = evalclusters(spots(:,2),'kmeans','silhouette','KList',number_of_rows);
+    number_of_rows = eva.OptimalK;
+end
+
 
 %Hierarchial clustering works better for us
 spots = [spots,clusterdata(spots(:,1),number_of_cols) + 1e6];

@@ -47,6 +47,10 @@ def cropper_ROI(MRXS,out_dir, width, answ, lvl=0,transparency=False, writeAll=Fa
     if not (os.path.exists(out_dir)):
             os.mkdir(out_dir)
 
+    #############################
+    ##### Ask about options #####
+    #############################
+
     # Load mrxs file names to be cut
     with open(os.getcwd()+'/mrxs_paths.csv') as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
@@ -110,6 +114,8 @@ def cropper_ROI(MRXS,out_dir, width, answ, lvl=0,transparency=False, writeAll=Fa
     			dim_pad = str(max( [len(str(x)) for x in dims] ))
     			out_dims=(float(row[2])/scaledown, float(row[3])/scaledown)
     			out_blocks=( int(math.ceil( out_dims[0]/px )), int(math.ceil( out_dims[1]/px )) )
+
+
     			for y in range(out_blocks[1]):
     				for x in range(out_blocks[0]):
     					y_px = row[1]+y*px
@@ -120,11 +126,8 @@ def cropper_ROI(MRXS,out_dir, width, answ, lvl=0,transparency=False, writeAll=Fa
     					wrote=write_if_data(reader.read_region((row[0]+scaledown*x*px,row[1]+scaledown*y*px),lvl,(px,px)),os.path.join(out_dir,("%s_-_y%0"+dim_pad+"d_x%0"+dim_pad+"d.png") % (ROI_path,y_px,x_px)),transparency,writeAll,verbose)
     					if not verbose:
     						if wrote:
-    							sys.stdout.write("o")
-    						else:
-    							sys.stdout.write(".")
+    							sys.stdout.write("Converting image %d/%d\r" % (x+out_blocks[0]*y, out_blocks[0]*out_blocks[1]))
     					sys.stdout.flush()
-    				sys.stdout.write("\n")
     		print("The ROI of sample %s is saved in %smin %ss.S" % (os.path.splitext(os.path.basename(image))[0],int((time.time() - start_time)//60), int((time.time() - start_time)%60)))
     	os.remove(os.getcwd()+'/mrxs_paths.csv')
     	os.remove(os.getcwd()+'/all_ROI.csv')
@@ -164,7 +167,7 @@ def cropper_Spots(MRXS,out_dir): #Code for cropping the Spots
             spot_names_name = []
             for row in readCSV:
                 spot_names_name.extend(row)
-            os.remove(os.getcwd()+'/spot_names.csv')
+        os.remove(os.getcwd()+'/spot_names_name.csv')
         spot_names_name = np.array([str(i) for i in spot_names_name])
         spot_names_name = spot_names_name.reshape(int(np.size(spot_names_name)/2),2)
 
@@ -174,7 +177,7 @@ def cropper_Spots(MRXS,out_dir): #Code for cropping the Spots
         all_spots = []
         for row in readCSV:
             all_spots.extend(row)
-            os.remove(os.getcwd()+'/all_spots.csv')
+        os.remove(os.getcwd()+'/all_spots.csv')
     all_spots = np.array([float(i) for i in all_spots])
     all_spots = all_spots.reshape(int(np.size(all_spots)/6),6)
 

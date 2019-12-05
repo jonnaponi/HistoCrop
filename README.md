@@ -46,68 +46,21 @@ Press H in case you want to read the instructions:
 
 Selecting `H` gives the help page, __which Valeria needs to update__.
 
-Selecting `R` allows you to select a ROI from a whole slide image (WSI) and then cut it in sub-images. This can be useful
-| in case it is necessary to select only a portion of the WSI. The following cut is implemented in     |
-| order to work with the image that problably is in the order of ~GB.
+Selecting `R` allows you to select a ROI from a whole slide image (WSI) and then cut it in sub-images.    
 
-```
+Selecting `S` allows you to extract TMA spots from a mrxs-file. Spots can be saved into patient specific folders with custom numbering if a suitable excel file is provided (specified later).
 
-| ROI: The ROI option allows to select a specif area and then cut it in sub-images. This can be useful |
-| in case it is necessary to select only a portion of the WSI. The following cut is implemented in     |
-| order to work with the image that problably is in the order of ~GB.                                  |
-|                                                                                                      |
-| The program will ask you:                                                                            |
-|  - Input directory                                                                                   |
-|  - Output directory                                                                                  |
-|  - Dimesion of the square used for cut the ROI                                                       |
-|                                                                                                      |
-| A GUI is used to select the ROI.                                                                     |
-|                                                                                                      |
-| Suggestion: check the size in pixel of the WSI and then choose the dimension of the square according |
-| to it.It is also better select the ROI considering the total width and white contours over and under |
-| of the WSI.                                                                                          |
-+------------------------------------------------------------------------------------------------------+
-| Spot: The Spot option allows to reconize the spots in a TMA and cut them in order to obtain sigle    |
-| image of spot per TMAs. If a document with the ID patients is attached it is possible to save each   |
-| spot with the proper ID and in the corresponding folder per patient. if this is not the casey, the   |
-| code will name the spots with a number from the bottom left to the upper right.                      |
-| The program will ask you:                                                                            |
-|                                                                                                      |
-|  - Input directory                                                                                   |
-|  - Output directory                                                                                  |
-|  - Number of row in the TMA (remember to choose the maximum value considering all the TMAs)          |
-|  - Number of column in the TMA (remember to choose the maximum value considering all the TMAs)       |
-|                                                                                                      |
-| A GUI is used to check if the program have found all the spots and, in case, allows to add or remove |
-| incorrect elements.                                                                                  |
-|                                                                                                      |
-| Suggestion: Considering the IDpatient file, take a look to the example given with this code and      |
-| rememeber to delete from the file those spots that you will remove in the GUI!                       |
-+------------------------------------------------------------------------------------------------------+
-```
+  1. After selecting `S` the program will ask for the `input` directory and an _empty_ `output` directory for the spots and summary-images.
+  2. Next, the number of the rows and columns in the TMA spot matrix need to be specified. It does not matter if some of the TMA spot matrices have less rows or columns, select the maximum.
+  3. [OPTIONAL] Give the folder of the excel files for patient ids and numbering. The excel file has some requirements, which stem from the standard excel outputted from some scanners.
+       - __Numbering:__  Has to be specified in the _second_ sheet of the excel and match the dimensions given in the second part. All numbers must be present for spots that are actually present in the respective TMA image.
+       - __Naming:__ Has to be speficied in the _third_ sheet of the excel and match the dimensions given in the second part. All spots that have the same name before an underscore (`patientID_*`) will be saved in the same folder under the respective folder for the whole TMA.
+       - Name of each excel file must match the name of the mrxs-file.
+  4. The program will output an image of the TMA spot matrix. If this matrix is detected in full select `Y`es. If some of the spots are not detected completely, the user has to give a new radius for the `strel()` command used in Matlab. Increasing the radius will select larger area and decreasing the radius will make the area smaller. An example can be seen below.
 
-
-```
-  Function: Crops TMA spots out of mrxs-image
-
-  Usage: $SELF -i [folder_of_mrxs_files] -r [max_rows] -c [max_cols]
-               -m [matlab_location]
-  Required inputs:
-
-  -i    Folder of MRXS images
-  -r    Maximum number of rows in TMA matrix
-  -c    Maximum number of columns in TMA matrix
-  -m    Location of matlab (MAC: /Applications/MATLAB_R2019a.app/bin/matlab, UNIX: use whereis)
-```
-
-3. Look at your slides and see what is the maximum number of rows and columns
-
-4. Run cropTMA
-
-```
-./cropTMA -i ../TurkuTMA -r 8 -c 8 -m /Applications/MATLAB_R2019a.app/bin/matlab
-```
-
+![Radius of 35](radius35.png)
+![Radius of 100](radius100.png)
+![Example of the GUI](gui.png)
 
 6. Wait for the spots to be saved!
 
