@@ -56,57 +56,17 @@ Selecting `S` allows you to extract TMA spots from a mrxs-file. Spots can be sav
        - __Numbering:__  Has to be specified in the _second_ sheet of the excel and match the dimensions given in the second part. All numbers must be present for spots that are actually present in the respective TMA image.
        - __Naming:__ Has to be speficied in the _third_ sheet of the excel and match the dimensions given in the second part. All spots that have the same name before an underscore (`patientID_*`) will be saved in the same folder under the respective folder for the whole TMA.
        - Name of each excel file must match the name of the mrxs-file.
-  4. The program will output an image of the TMA spot matrix. If this matrix is detected in full select `Y`es. If some of the spots are not detected completely, the user has to give a new radius for the `strel()` command used in Matlab. Increasing the radius will select larger area and decreasing the radius will make the area smaller. An example can be seen below.
+  4. The program will output an image of the TMA spot matrix. If this matrix is detected in full select `Y`es. If some of the spots are not detected completely, the user has to give a new radius for the `strel()` command used in Matlab.
+      * Increasing the radius will select larger area and decreasing the radius will make the area smaller. In the example below, the left side has too small radius and one spot is missed. After increasing the radius the matrix is detected correctly. It does not matter if small specs are included in the spot matrix (image on the right side) as they will be discarded later.
 
-![Radius of 35](radius35.png)
-![Radius of 100](radius100.png)
+![Radius comparison](radius.png)
+
+  5. Next the GUI will open and the user has an option to edit any spots that are not correctly detected. It is also possible to remove spots so that they will not be selected. __Carefully follow the instructions of the GUI.__
+
 ![Example of the GUI](gui.png)
 
-6. Wait for the spots to be saved!
-
-## Explanation of the workflow
-
-A more detailed explanation of the workflow can be aquired by reading trough the code and comments (do'h).
-
-**Generate thumbnails from the mrxs-files (python)**
-  1. Create folder for output files (eg. TurkuTMA_images).
-  2. Save label, macro and thumbnail images of the mrxs file.
-  3. Find out mrxs-image dimensions using openslide and divide image into matrix of small images.
-  4. Save small images with coordinates in the name.
-
-
-**Determine spot locations using the thumbnail image (matlab)**
-  1. Load the thumbnail images generated with mrxs_convert.
-  2. Detect spot matrix coordinates from thumbnail image and crop the thumbnail image.
-  3. For each thumbnail image detect spot coordinates.
-    1. Create mask of spots and extract boundingBoxes.
-    2. Rotate boundingBox centroids so that the coordinates can be used to determine column and row for each spot.
-    3. Use hierarchical clustering to cluster x and y coordinates and then give each spot an id from the bottom-right to upper left corner.
-    4. Create a summaryImage by drawign boundingBoxes and ids to the thumbnail image.
-
-
-**Allow modification of the boundingBoxes (matlab)**
-  1. Show summary image to the user.
-  2. Ask user to redraw any boundingBox. Click image to continue.
-  3. ASk user to remove any boundingBox. Click image to continue.
-  4. Repeat until all summaryImages have been shown.
-
-
-**Cut out each TMA spot (matlab)**
-  1. Replace/remove any user defined boundingBoxes.
-  2. Create folder for all the spots (eg. TurkuTMA_spots)
-  3. Create a new summaryImg and save to output folder.
-  4. Reconstruct spot matrix area of the TMA image using the coordinates detected earlier.
-  5. Create folder for the TMA being processed (eg. TurkuTMA_spots/TMA_1)
-  6. Crop out each spot using the boundingBox coordinates.
-
-
-
-## Built With
-
-  * [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-  * [Maven](https://maven.apache.org/) - Dependency Management
-  * [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+  6. After exiting the GUI the spots will be saved.
+     * If the excel was provided and there were no warnings, all spots will be saved in patient specific folders.
 
 ## Authors
 
@@ -115,8 +75,4 @@ A more detailed explanation of the workflow can be aquired by reading trough the
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.

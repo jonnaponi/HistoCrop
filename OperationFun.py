@@ -47,9 +47,29 @@ def cropper_ROI(MRXS,out_dir, width, answ, lvl=0,transparency=False, writeAll=Fa
     if not (os.path.exists(out_dir)):
             os.mkdir(out_dir)
 
-    #############################
-    ##### Ask about options #####
-    #############################
+    #Trasparency
+    answ=input('Do you want enable the transparency option and save empty pixels as transparent (default: N)? [Y/N]: ').upper()
+    while not answ in ['Y','N']:
+        answ=input('Do you want enable the transparency option and save empty pixels as transparent (default: N)? [Y/N]: ').upper()
+    if answ=='Y':
+        transparency=True
+        print('Trasparency option enabled!')
+
+    #WriteAll
+    answ=str(input('Do you want enable the writeAll option and save images even if there is no content (default : N)? [Y/N]: ' ).upper())
+    while not answ in ['Y','N']:
+        answ=str(input('Do you want enable the writeAll option and save images even if there is no content (default : N)? [Y/N]: ' ).upper())
+    if answ=='Y':
+        writeAll=True
+        print('writeAll option enabled!')
+
+    #Verbose
+    answ=str(input('Do you want enable the verbose option, which will output way too much stuff (default: N) [Y/N]: ').upper())
+    while not answ in ['Y','N']:
+        answ=str(input('Do you want enable the verbose option? This option outputs way too much stuff and is not recommended [Y/N]: ' ).upper())
+    if answ=='Y':
+        verbose=True
+        print('Verbose option enabled! You were warned...')
 
     # Load mrxs file names to be cut
     with open(os.getcwd()+'/mrxs_paths.csv') as csvfile:
