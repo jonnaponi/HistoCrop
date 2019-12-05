@@ -18,7 +18,7 @@ class Crop():
 		output_dir=self.output_dir #output folder
 		#Ask if the user what to cut the WSI with the same program or not. Sometimes the number of WSI is big so it would be necessary used Anduril or another program
 		#parallelize the cut process.
-		answ=str(input('Do you want cut the WSI directly with this code?[Y/N]: ' ).upper())
+		answ=str(input('Do you want cut the WSI directly with this code? [Y/N]: ').upper())
 
 		if answ=='Y':
 			#Ask the dimension of the rectangle for extract the sub-images

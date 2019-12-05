@@ -48,41 +48,43 @@ def cropper_ROI(MRXS,out_dir, width, answ, lvl=0,transparency=False, writeAll=Fa
             os.mkdir(out_dir)
 
     #Trasparency
-    answ=input('Do you want enable the transparency option and save empty pixels as transparent (default: N)? [Y/N]: ').upper()
-    while not answ in ['Y','N']:
-        answ=input('Do you want enable the transparency option and save empty pixels as transparent (default: N)? [Y/N]: ').upper()
-    if answ=='Y':
+    answ_transparency=input('Do you want enable the transparency option and save empty pixels as transparent (default: N)? [Y/N]: ').upper()
+    while not answ_transparency in ['Y','N','']:
+        answ_transparency=input('Do you want enable the transparency option and save empty pixels as transparent (default: N)? [Y/N]: ').upper()
+    if answ_transparency=='Y':
         transparency=True
         print('Trasparency option enabled!')
 
     #WriteAll
-    answ=str(input('Do you want enable the writeAll option and save images even if there is no content (default : N)? [Y/N]: ' ).upper())
-    while not answ in ['Y','N']:
-        answ=str(input('Do you want enable the writeAll option and save images even if there is no content (default : N)? [Y/N]: ' ).upper())
-    if answ=='Y':
+    answ_write=str(input('Do you want enable the writeAll option and save images even if there is no content (default: N)? [Y/N]: ' ).upper())
+    while not answ_write in ['Y','N','']:
+        answ_write=str(input('Do you want enable the writeAll option and save images even if there is no content (default: N)? [Y/N]: ' ).upper())
+    if answ_write=='Y':
         writeAll=True
         print('writeAll option enabled!')
 
     #Verbose
-    answ=str(input('Do you want enable the verbose option, which will output way too much stuff (default: N) [Y/N]: ').upper())
-    while not answ in ['Y','N']:
-        answ=str(input('Do you want enable the verbose option? This option outputs way too much stuff and is not recommended [Y/N]: ' ).upper())
-    if answ=='Y':
+    answ_verbose=str(input('Do you want enable the verbose option, which will output way too much stuff (default: N)? [Y/N]: ').upper())
+    while not answ_verbose in ['Y','N','']:
+        answ_verbose=str(input('Do you want enable the verbose option, which will output way too much stuff (default: N)? [Y/N]: ').upper())
+    if answ_verbose=='Y':
         verbose=True
         print('Verbose option enabled! You were warned...')
 
-    # Load mrxs file names to be cut
+    #Load mrxs file names to be cut
     with open(os.getcwd()+'/mrxs_paths.csv') as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
         MRXS_files = []
         for row in readCSV:
             MRXS_files.extend(row)
+
     #Consider with image analyses
     MRXS_files_done = []
     for file in os.listdir(MRXS_folder):
         if file.endswith(".mrxs"):
             MRXS_files_done.append(os.path.join(MRXS_folder,file))
             MRXS_files_done.sort()
+
     #Discard the images yet analysed
     done = []
     for peepoo in MRXS_files_done:
