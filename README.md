@@ -59,11 +59,11 @@ Selecting `S` allows you to extract TMA spots from a mrxs-file. Spots can be sav
   4. The program will output an image of the TMA spot matrix. If this matrix is detected in full select `Y`es. If some of the spots are not detected completely, the user has to give a new radius for the `strel()` command used in Matlab.
       * Increasing the radius will select larger area and decreasing the radius will make the area smaller. In the example below, the left side has too small radius and one spot is missed. After increasing the radius the matrix is detected correctly. It does not matter if small specs are included in the spot matrix (image on the right side) as they will be discarded later.
 
-![Radius comparison](radius.png)
+![Radius comparison](radius.jpg)
 
   5. Next the GUI will open and the user has an option to edit any spots that are not correctly detected. It is also possible to remove spots so that they will not be selected. __Carefully follow the instructions of the GUI.__
 
-![Example of the GUI](gui.png)
+![Example of the GUI](gui.jpg)
 
   6. After exiting the GUI the spots will be saved.
      * If the excel was provided and there were no warnings, all spots will be saved in patient specific folders.
