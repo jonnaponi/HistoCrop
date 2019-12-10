@@ -7,7 +7,7 @@
 % Ariotta Valeria  & Pohjonen Joona
 % June 2019
 
-function [r] = ROI_selection(mrxs_input,mrxs_thumbnails)
+function [r] = ROI_selection(mrxs_input,mrxs_thumbnails,answ)
 
 %Find thumbnails
 tmp = dir(mrxs_thumbnails);
@@ -65,6 +65,12 @@ if ~isempty(not_cut)
     if ~exist(spots_folder)
         mkdir(spots_folder);
     end
+    
+    %Output in case of answ='N'
+    Infocut_path=[mrxs_thumbnails(1:ind(end)-1) 'InfoCut/'];
+    if answ=='N' & ~exist(Infocut_path)
+        mkdir(Infocut_path)
+    end
         
     %Write summaries for each TMA
     for tma_i=1:length(all_thumbnails)
@@ -90,8 +96,13 @@ if ~isempty(not_cut)
         % Save the ROI to all_spots.csv and names to mrxs_names.csv
         ROI_mat = [ROI_mat; tma_i, add_rect_data{tma_i}];
     end
-        writematrix(ROI_mat,'all_ROI.csv')
-        writecell(mrxs_paths,'mrxs_paths.csv')
+        if answ=='N'
+            writematrix(ROI_mat,strcat(Infocut_path,'all_ROI.csv'));
+            writecell(mrxs_paths,strcat(Infocut_path,'mrxs_paths.csv'));
+        else
+            writematrix(ROI_mat,'all_ROI.csv');
+            writecell(mrxs_paths,'mrxs_paths.csv');
+        end
 else
     fprintf('\nAll ROIs have been cut.\n')
 end

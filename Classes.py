@@ -45,11 +45,11 @@ class Crop():
 
 		print("Detecting ROIs...") #GUI to manually select the ROI
 		Mat_Func=matlab.engine.start_matlab()
-		r=Mat_Func.ROI_selection(*(input_dir, OUTPUT_THUM_FOLDER),nargout=1)
+		r=Mat_Func.ROI_selection(*(input_dir, OUTPUT_THUM_FOLDER,answ),nargout=1)
 		if r=="DONE":
 			Mat_Func.quit()
 
-		if not os.path.isfile('./all_ROI.csv'): #Images information are necessary!
+		if (not os.path.isfile('./all_ROI.csv')) and (not os.path.isfile(OUTPUT_THUM_FOLDER[0:OUTPUT_THUM_FOLDER.index('_thumbnails')]+'InfoCut/all_ROI.csv')): #Images information are necessary!
 			print('Error! The information for the ROI are not available!')
 			quit()
 

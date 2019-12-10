@@ -42,11 +42,12 @@ def write_if_data(img,name,transparency,writeAll,verbose):
 
 
 def cropper_ROI(MRXS,out_dir, width, answ, lvl=0,transparency=False, writeAll=False,verbose=False): #Code for cropping the ROI
-    MRXS_folder = os.path.abspath(MRXS) #input folder
-    out_dir = out_dir + "/_ROI/" #Output folder
-    if not (os.path.exists(out_dir)):
-            os.mkdir(out_dir)
-    if answ=='Y':        
+    if answ=='Y':     
+        MRXS_folder = os.path.abspath(MRXS) #input folder
+        out_dir = out_dir + "/_ROI/" #Output folder
+        if not (os.path.exists(out_dir)):
+                os.mkdir(out_dir)
+               
         #Trasparency
         answ_transparency=input('Do you want enable the transparency option and save empty pixels as transparent (default: N)? [Y/N]: ').upper()
         while not answ_transparency in ['Y','N','']:
@@ -71,92 +72,90 @@ def cropper_ROI(MRXS,out_dir, width, answ, lvl=0,transparency=False, writeAll=Fa
             verbose=True
             print('Verbose option enabled! You were warned...')
 
-    #Load mrxs file names to be cut
-    with open(os.getcwd()+'/mrxs_paths.csv') as csvfile:
-        readCSV = csv.reader(csvfile, delimiter=',')
-        MRXS_files = []
-        for row in readCSV:
-            MRXS_files.extend(row)
+        #Load mrxs file names to be cut
+        with open(os.getcwd()+'/mrxs_paths.csv') as csvfile:
+            readCSV = csv.reader(csvfile, delimiter=',')
+            MRXS_files = []
+            for row in readCSV:
+                MRXS_files.extend(row)
 
-    #Consider with image analyses
-    MRXS_files_done = []
-    for file in os.listdir(MRXS_folder):
-        if file.endswith(".mrxs"):
-            MRXS_files_done.append(os.path.join(MRXS_folder,file))
-            MRXS_files_done.sort()
+        #Consider with image analyses
+        MRXS_files_done = []
+        for file in os.listdir(MRXS_folder):
+            if file.endswith(".mrxs"):
+                MRXS_files_done.append(os.path.join(MRXS_folder,file))
+                MRXS_files_done.sort()
 
-    #Discard the images yet analysed
-    done = []
-    for peepoo in MRXS_files_done:
-        if not peepoo in MRXS_files:
-            done.append(peepoo)
+        #Discard the images yet analysed
+        done = []
+        for peepoo in MRXS_files_done:
+            if not peepoo in MRXS_files:
+                done.append(peepoo)
 
-    # Open all_ROI.csv and format
-    with open(os.getcwd()+'/all_ROI.csv') as csvfile:
-        readCSV = csv.reader(csvfile, delimiter=',')
-        all_ROI = []
-        for row in readCSV:
-            all_ROI.extend(row)
-    all_ROI = np.array([float(i) for i in all_ROI])
-    all_ROI = all_ROI.reshape(int(np.size(all_ROI)/5),5)
-
-
-    # Tell which ROIs have been cut already
-    for roi in done:
-        print('\nROI',os.path.basename(roi), 'has already been cut.\n')
-
-    if answ=='Y':
-    	# Cut ROIs from images and save
-    	ROI_numbers = np.unique(all_ROI[:,0]).astype(int)
-    	for ROI in ROI_numbers:
-    		# Read image with OpenSlide
-    		image=MRXS_files[int(ROI-1)]
-    		reader=openslide.OpenSlide(image)
-    		print("\nProcessing image %s" % os.path.basename(image))
-    		ROI_folder = out_dir + os.path.splitext(os.path.basename(image))[0] + "/"
-    		if not (os.path.exists(ROI_folder)):
-    			os.mkdir(ROI_folder)
-
-    		start_time = time.time()
-
-    		# Get downsampling factor and save it to scale
-    		level=reader.level_downsamples.index(64)
-    		dims=reader.dimensions
-    		thumbnail_dims=reader.level_dimensions[level]
-    		scale=dims[0]/thumbnail_dims[0]
-
-    		#Start to cut in sub images the selected ROI with the dimension chosen before.
-    		for row in all_ROI[all_ROI[:,0] == ROI,1:5]:
-    			row = row*scale
-    			row = row.astype(int)
-    			ROI_path = ROI_folder + os.path.splitext(os.path.basename(image))[0]
-
-    			px=width
-    			scaledown=int(math.pow(2,lvl)) #In case of scaled image
-    			dim_pad = str(max( [len(str(x)) for x in dims] ))
-    			out_dims=(float(row[2])/scaledown, float(row[3])/scaledown)
-    			out_blocks=( int(math.ceil( out_dims[0]/px )), int(math.ceil( out_dims[1]/px )) )
+        # Open all_ROI.csv and format
+        with open(os.getcwd()+'/all_ROI.csv') as csvfile:
+            readCSV = csv.reader(csvfile, delimiter=',')
+            all_ROI = []
+            for row in readCSV:
+                all_ROI.extend(row)
+        all_ROI = np.array([float(i) for i in all_ROI])
+        all_ROI = all_ROI.reshape(int(np.size(all_ROI)/5),5)
 
 
-    			for y in range(out_blocks[1]):
-    				for x in range(out_blocks[0]):
-    					y_px = row[1]+y*px
-    					x_px = row[0]+x*px
-    					if verbose:
-    						sys.stdout.write("%d/%d\n" % (x+out_blocks[0]*y, out_blocks[0]*out_blocks[1] ))
-    					#Each sub-image will have a name related to the chosen coordinates
-    					wrote=write_if_data(reader.read_region((row[0]+scaledown*x*px,row[1]+scaledown*y*px),lvl,(px,px)),os.path.join(out_dir,("%s_-_y%0"+dim_pad+"d_x%0"+dim_pad+"d.png") % (ROI_path,y_px,x_px)),transparency,writeAll,verbose)
-    					if not verbose:
-    						if wrote:
-    							sys.stdout.write("Converting image %d/%d\r" % (x+out_blocks[0]*y, out_blocks[0]*out_blocks[1]))
-    					sys.stdout.flush()
-    		print("The ROI of sample %s is saved in %smin %ss.S" % (os.path.splitext(os.path.basename(image))[0],int((time.time() - start_time)//60), int((time.time() - start_time)%60)))
-    	os.remove(os.getcwd()+'/mrxs_paths.csv')
-    	os.remove(os.getcwd()+'/all_ROI.csv')
-    	os.remove(os.getcwd()+'/tmp_summaries.mat')
-    	os.remove(os.getcwd()+'/List_Rect.mat')
+        # Tell which ROIs have been cut already
+        for roi in done:
+            print('\nROI',os.path.basename(roi), 'has already been cut.\n')
+        # Cut ROIs from images and save
+        ROI_numbers = np.unique(all_ROI[:,0]).astype(int)
+        for ROI in ROI_numbers:
+            # Read image with OpenSlide
+            image=MRXS_files[int(ROI-1)]
+            reader=openslide.OpenSlide(image)
+            print("\nProcessing image %s" % os.path.basename(image))
+            ROI_folder = out_dir + os.path.splitext(os.path.basename(image))[0] + "/"
+            if not (os.path.exists(ROI_folder)):
+                os.mkdir(ROI_folder)
+
+            start_time = time.time()
+            # Get downsampling factor and save it to scale
+            level=reader.level_downsamples.index(64)
+            dims=reader.dimensions
+            thumbnail_dims=reader.level_dimensions[level]
+            scale=dims[0]/thumbnail_dims[0]
+
+            #Start to cut in sub images the selected ROI with the dimension chosen before.
+            for row in all_ROI[all_ROI[:,0] == ROI,1:5]:
+                row = row*scale
+                row = row.astype(int)
+                ROI_path = ROI_folder + os.path.splitext(os.path.basename(image))[0]
+
+                px=width
+                scaledown=int(math.pow(2,lvl)) #In case of scaled image
+                dim_pad = str(max( [len(str(x)) for x in dims] ))
+                out_dims=(float(row[2])/scaledown, float(row[3])/scaledown)
+                out_blocks=( int(math.ceil( out_dims[0]/px )), int(math.ceil( out_dims[1]/px )) )
+
+                for y in range(out_blocks[1]):
+                    for x in range(out_blocks[0]):
+                        y_px = row[1]+y*px
+                        x_px = row[0]+x*px
+                        if verbose:
+                            sys.stdout.write("%d/%d\n" % (x+out_blocks[0]*y, out_blocks[0]*out_blocks[1] ))
+                            #Each sub-image will have a name related to the chosen coordinates
+                        wrote=write_if_data(reader.read_region((row[0]+scaledown*x*px,row[1]+scaledown*y*px),lvl,(px,px)),os.path.join(out_dir,("%s_-_y%0"+dim_pad+"d_x%0"+dim_pad+"d.png") % (ROI_path,y_px,x_px)),transparency,writeAll,verbose)
+                        if not verbose:
+                            if wrote:
+                                sys.stdout.write("Converting image %d/%d\r" % (x+out_blocks[0]*y, out_blocks[0]*out_blocks[1]))
+                        sys.stdout.flush()
+            print("The ROI of sample %s is saved in %smin %ss.S" % (os.path.splitext(os.path.basename(image))[0],int((time.time() - start_time)//60), int((time.time() - start_time)%60)))
+        os.remove(os.getcwd()+'/mrxs_paths.csv')
+        os.remove(os.getcwd()+'/all_ROI.csv')
+        os.remove(os.getcwd()+'/tmp_summaries.mat')
+        os.remove(os.getcwd()+'/List_Rect.mat')
     else:
-    	print("Operation Completed!\nYou can find useful information in four file produced: mrxs_paths.csv, all_ROI.csv, tmp_summaries.mat, List_Rect.mat'. These can be used for the next phase of cut.")
+        os.remove(os.getcwd()+'/tmp_summaries.mat')
+        os.remove(os.getcwd()+'/List_Rect.mat')
+        print("Operation Completed!\nYou can find 2 useful file for the cut in the folder Infocut in the ouptut folder: mrxs_paths.csv, all_ROI.csv. These can be used for the next phase of cut.")
 
 def cropper_Spots(MRXS,out_dir): #Code for cropping the Spots
     # Get the folder of mrxs-images
