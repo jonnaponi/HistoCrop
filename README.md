@@ -40,7 +40,7 @@ Press S in case you want to crop the Spots present in the TMAs
 Press H in case you want to read the instructions:
 ```
 
-Selecting `H` gives the help page: 
+Selecting `H` gives the help page: ![Alt text](https://github.com/jonnaponi/HistoCrop/blob/master/HChelp.png?raw=true "Title")
 
 
 Selecting `R` allows you to select a ROI from a whole slide image (WSI) and then cut it in sub-images.    
