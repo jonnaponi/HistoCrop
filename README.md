@@ -1,6 +1,6 @@
 # HistoCrop
 
-Cut ROI or TMA spots from mrxs-images!
+Cut ROI or TMA spots from hematoxylin and eosin (HE) mrxs-images!
 
 ### Prerequisites
 
