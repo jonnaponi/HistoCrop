@@ -49,7 +49,7 @@ Selecting `R` allows you to choose a ROI from a whole slide image (WSI). This co
 2. Next, the program asks if you want to cut the ROI in sub-images directly with the program. The reason is beacuse it is possible to save only the coordinates of the ROI if it is needed but it is also possible to cut the ROI in sub-images and save them as PNG if you need to work with them directly. The WSI dimensions are of the order of GB and stardand program can't open it directly, unless the WSI are resized, with the risk to loose infomation, or cut in sub-images.
 3. If you want cut the ROI directly with the program, it is necessary add the dimension of the square used to cut in sub-images.
 4. After that, the GUI will appear and it is possible to select the desired tissue with a ROI (__Carefully follow the instructions of the GUI.__):![Alt text](https://github.com/jonnaponi/HistoCrop/blob/master/rr.png?raw=true "Title")
-5. Finally, the ROI selection is done and according with the point 2, the ROI information will be saved or the sub-images cut will start. In particular, the sub-images will be saved in separate folder according with the original sample name.
+5. Finally, the ROI selection is done and according with the point 2, the ROI information will be saved or the sub-images cut will start. In particular, the sub-images from each ROI will be saved in separate folders according with the original sample name.
 
 
 Selecting `S` allows you to extract TMA spots from a mrxs-file. Spots can be saved into patient specific folders with custom numbering if a suitable excel file is provided (specified later).
