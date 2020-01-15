@@ -81,14 +81,14 @@ if __name__ == '__main__':
 		table = tt.Texttable()
 		table.header(["Instructions"])
 		table.add_row(["The present code allows to manage MIRAX files of histological samples. Two possible solutions were implemented:\n\n 1) Select a specific region of interest(ROI) from the whole slide image (WSI) and then cut it in sub-images\n 2) Find the spots in a TMA sample and cut them in sigle images"])
-		table.add_row(["Prerequisites:\n1) Matlab\n  - MATLAB Engine API for Python\n2) Python2.6 \n  - openslide,sys, os, time, csv, pandas, numpy, texttable"])
+		table.add_row(["Prerequisites:\n1) Matlab\n  - MATLAB Engine API for Python\n2) Python3 \n  - openslide,sys, os, time, csv, pandas, numpy, texttable"])
 		table.add_row(["How to run:\n - Open the terminal in the code folder and write:\n\n\tPython CropCode.py\n\nThen follow simply answer to the question!"])
 		table.add_row(["ROI: The ROI option allows to select a specif area and then cut it in sub-images. This can be useful in case it is necessary to select only a portion of the WSI. The following cut is implemented in order to work with the image that problably is in the order of ~GB.\n"\
-		"\nThe program will ask you:\n - Input directory\n - Output directory\n - Dimesion of the square used for cut the ROI\n\nA GUI is used to select the ROI.\n\nSuggestion: check the size in pixel of the WSI and then choose the dimension of the square according to it."\
+		"\nThe program will ask you:\n - Input directory\n - Output directory\n - If you want only the files with the dimension of the ROI or if you want to cut it directly with this program\n - Dimesion of the square used for cut the ROI, in case your answer was 'y' (yes) to the previous question\n\nA GUI is used to select the ROI.\n\nSuggestion: check the size in pixel of the WSI and then choose the dimension of the square according to it."\
 		"It is also better select the ROI considering the total width and white contours over and under of the WSI."])
 		table.add_row(["Spot: The Spot option allows to reconize the spots in a TMA and cut them in order to obtain sigle image of spot per TMAs. If a document with the ID patients is attached it is possible to save each spot with the proper ID and in the corresponding folder per patient."\
-		" if this is not the casey, the code will name the spots with a number from the bottom left to the upper right.\nThe program will ask you:\n\n - Input directory\n - Output directory\n - Number of row in the TMA (remember to choose the maximum value considering all the TMAs)\n - Number of column in the TMA (remember to choose the maximum value considering all the TMAs)"\
-		"\n\nA GUI is used to check if the program have found all the spots and, in case, allows to add or remove incorrect elements.\n\nSuggestion: Considering the IDpatient file, take a look to the example given with this code and rememeber to delete from the file those spots that you will remove in the GUI!"])
+		" if this is not the casey, the code will name the spots with a number from the bottom left to the upper right.\nThe program will ask you:\n\n - Input directory\n - Output directory\n - Number of row in the TMA (remember to choose the maximum value considering all the TMAs)\n - Number of column in the TMA (remember to choose the maximum value considering all the TMAs)\n - Dimension of the radius in case the detected matrix of the spots is not correct"\
+		"\n\nA GUI is used to check if the program have found all the spots and, in case, allows to add or remove incorrect elements.\n\nSuggestion: Considering the IDpatient file, take a look to the example given with this code!"])
 		table.set_cols_width([100])
 		print(table.draw())
 	#In case of unknown character
